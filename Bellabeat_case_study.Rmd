@@ -1,0 +1,340 @@
+---
+title: "Bellabeat case study"
+author: "Jon"
+date: '2022-05-13'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Introduction and background
+Bellabeat case study uses FitBit data set from https://www.kaggle.com/arashnic/fitbit
+
+## Upload your CSV files to R
+Remember to upload your CSV files to your project from the relevant data source:
+https://www.kaggle.com/arashnic/fitbit
+
+Remember, there are many different CSV files in the dataset. We have uploaded two CSVs into the project, but you will likely want to use more than just these two CSV files.
+
+## Install libraries
+Tidyverse
+
+```{r}
+install.packages('tidyverse')
+library(tidyverse)
+install.packages("wesanderson")
+library(wesanderson)
+```
+
+
+## Loading CSV files
+
+```{r}
+daily_activity <- read.csv("dailyActivity_merged.csv")
+```
+
+```{r}
+sleep_day <- read.csv("sleepDay_merged.csv")
+```
+
+```{r}
+weight_log <- read.csv("weightLogInfo_merged.csv")
+```
+
+```{r}
+daily_steps <- read.csv("dailySteps_merged.csv")
+```
+
+```{r}
+hourly_steps <- read.csv("hourlySteps_merged.csv")
+```
+
+## Cleaning the Data
+
+Check for unique values
+```{r}
+length(unique(daily_activity$Id))
+length(unique(weight_log$Id))
+length(unique(sleep_day$Id))
+```
+
+Are there any NAs?
+```{r}
+sum(is.na(daily_activity))
+sum(is.na(sleep_day))
+sum(is.na(weight_log))
+```
+
+Are there duplicates?
+```{r}
+sum(duplicated(daily_activity))
+sum(duplicated(sleep_day))
+sum(duplicated(weight_log))
+```
+
+Remove duplicate from sleep_day
+```{r}
+sleep_day <- sleep_day[!duplicated(sleep_day), ]
+sum(duplicated(sleep_day))
+```
+
+Change datatype of Id to character
+```{r}
+daily_activity$Id <- as.character(as.numeric(daily_activity$Id))
+sleep_day$Id <- as.character(as.numeric(sleep_day$Id))
+weight_log$Id <- as.character(as.numeric(weight_log$Id))
+```
+
+## Exploring a few key tables
+Take a look at the daily_activity data.
+```{r}
+head(daily_activity)
+```
+
+Identify all the columns in the daily_activity data.
+```{r}
+colnames(daily_activity)
+```
+
+Add a DayofWeek column to daily_activity
+```{r}
+daily_activity <- daily_activity %>% mutate( DayofWeek = weekdays(as.Date(ActivityDate, "%m/%d/%Y")))
+```
+
+```{r}
+daily_activity$DayofWeek <- factor(daily_activity$DayofWeek, levels= c("Monday", 
+    "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+```
+
+Take a look at the sleep_day data.
+```{r}
+head(sleep_day)
+```
+
+Identify all the columns in the daily_activity data.
+```{r}
+colnames(sleep_day)
+```
+
+
+## Understanding some summary statistics
+How many unique participants are there in each dataframe? It looks like there may be more participants in the daily activity dataset than the sleep dataset.
+
+```{r distinct users}
+length(unique(daily_activity$Id))
+length(unique(weight_log$Id))
+length(unique(sleep_day$Id))
+```
+
+How many observations are there in each dataframe?
+```{r observations}
+nrow(daily_activity)
+nrow(sleep_day)
+```
+
+Quick summary statistics
+
+For the daily activity dataframe:
+```{r}
+daily_activity %>%  
+  select(TotalSteps,
+         TotalDistance,
+         SedentaryMinutes) %>%
+  summary()
+```
+
+For the sleep dataframe:
+```{r}
+sleep_day %>%  
+  select(TotalSleepRecords,
+  TotalMinutesAsleep,
+  TotalTimeInBed) %>%
+  summary()
+```
+
+What does this tell us about how this sample of people's activities? 
+
+## Plotting a few explorations
+
+What's the relationship between steps taken in a day and sedentary minutes? How could this help inform the customer segments that we can market to? E.g. position this more as a way to get started in walking more? Or to measure steps that you're already taking?
+
+```{r}
+ggplot(data=daily_activity, aes(x=TotalSteps, y=SedentaryMinutes)) + geom_point()
+```
+
+What's the relationship between minutes asleep and time in bed? You might expect it to be almost completely linear - are there any unexpected trends?
+
+```{r}
+ggplot(data=sleep_day, aes(x=TotalMinutesAsleep, y=TotalTimeInBed)) + geom_point()
+```
+
+What could these trends tell you about how to help market this product? Or areas where you might want to explore further?
+
+
+What days of the week are people most active?
+```{r}
+ggplot(data=daily_activity, aes(x=DayofWeek))+
+  geom_bar()
+```
+
+Weight Log
+Only 8 users total reporting. Only 3 are not manually reporting.
+```{r}
+ weight_log %>% 
+     filter(IsManualReport == "False") %>% 
+     group_by(Id) %>% 
+     summarise("Auto Reporting"=n()) %>%
+     distinct()
+```
+
+## Merging these two datasets together
+
+```{r}
+combined_data <- merge(sleep_day, daily_activity, by="Id")
+```
+
+Take a look at how many participants are in this data set.
+
+```{r}
+n_distinct(combined_data$Id)
+```
+## Summary Statistics
+
+Daily Activity
+```{r}
+daily_activity %>%
+ dplyr::select(DayofWeek,
+         TotalSteps,
+         TotalDistance,
+         VeryActiveMinutes,
+         FairlyActiveMinutes,
+         LightlyActiveMinutes,
+         SedentaryMinutes,
+         Calories) %>%
+  summary()
+```
+
+Sleep Day
+```{r}
+sleep_day %>%  
+  dplyr::select(TotalSleepRecords,
+  TotalMinutesAsleep,
+  TotalTimeInBed) %>%
+  summary()
+```
+
+Weight Log
+```{r}
+weight_log %>% 
+  dplyr::select(WeightPounds, BMI) %>%
+  summary()
+```
+
+Combined with Weight
+```{r}
+combined_data_weight <- merge(combined_data, weight_log, by="Id")
+```
+
+```{r}
+combined_data_weight %>%
+  dplyr::select(TotalSteps,
+         TotalDistance,
+         VeryActiveMinutes,
+         FairlyActiveMinutes,
+         LightlyActiveMinutes,
+         SedentaryMinutes,
+         Calories,
+         TotalMinutesAsleep,
+         TotalTimeInBed,
+         WeightPounds,
+         BMI
+         ) %>%
+  summary()
+```
+
+## Visuals
+
+Activity per day of the week
+```{r}
+ggplot(data=daily_activity, aes(x=DayofWeek, y=TotalSteps, fill=DayofWeek))+ 
+  geom_bar(stat="identity")+
+  scale_fill_manual(values = wes_palette(7, name = "GrandBudapest1", type = "continuous"), name = "")+
+  ylab("Total Steps") +
+  xlab("Day")
+
+
+```
+
+
+
+
+
+
+Activity per hour of day
+
+```{r}
+hourly_steps$ActivityHour=as.POSIXct(hourly_steps$ActivityHour,format="%m/%d/%Y %I:%M:%S %p")
+hourly_steps$Hour <-  format(hourly_steps$ActivityHour,format= "%H")
+```
+
+```{r}
+ggplot(data=hourly_steps, aes(x=Hour, y=StepTotal, fill=Hour))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values = wes_palette(24, name = "GrandBudapest1", type = "continuous"), name = "")+
+  labs(title="Hourly Steps")
+```
+
+Days of sedentary activity
+```{r}
+ggplot(data=daily_activity, aes(x=DayofWeek, y=SedentaryMinutes, fill=DayofWeek))+ 
+  geom_bar(stat="identity")+
+  scale_fill_manual(values = wes_palette(7, name = "GrandBudapest1", type = "continuous"), name = "")+
+  ylab("Sedentary Minutes") +
+  xlab("Day")
+```
+
+Correlation of calories and distance
+```{r}
+ggplot(data=daily_activity, aes(x=TotalDistance, y = Calories, color=SedentaryMinutes))+ 
+  geom_point()+ 
+  stat_smooth(method=lm)+
+  labs(title="Calories vs Distance")
+```
+
+Correlation of calories and steps
+```{r}
+ggplot(data=daily_activity, aes(x=TotalSteps, y = Calories, color=SedentaryMinutes))+ 
+  geom_point()+ 
+  stat_smooth(method=lm)+
+  labs(title="Calories vs Steps")
+  
+```
+
+Correlation of activity and sleep
+```{r}
+ggplot(data=combined_data, aes(x=TotalMinutesAsleep, y = Calories, color=TotalMinutesAsleep))+ 
+  geom_point()+ 
+  labs(title="Total Minutes Asleep vs Calories")+
+  xlab("Total Minutes Alseep")+
+  stat_smooth(method=lm)
+```
+
+
+Sleep VS Total Steps
+```{r}
+ggplot(data=combined_data, aes(x=TotalMinutesAsleep, y = TotalSteps, color=TotalSteps))+ 
+  geom_point()+ 
+  stat_smooth(method=lm)+
+  labs(title="Activity vs Sleep")
+```
+
+Sedentary Minutes VS Total Steps
+```{r}
+ggplot(data=combined_data, aes(x=SedentaryMinutes, y = TotalSteps, color=TotalSteps))+ 
+  geom_point()+ 
+  stat_smooth(method=lm)+
+  labs(title="Activity vs Non-Activity")
+```
