@@ -36,17 +36,21 @@ SleepDay_merged.csv has 24 unique user Ids
 > length(unique(sleep_day$Id))
 [1] 24
 ```
-- Add a weekday column to analyze activity per day of the week
+- Add a DayOfWeek column to analyze activity per day of the week
 ```
-daily_activity <- daily_activity %>% mutate( Weekday = weekdays(
+daily_activity <- daily_activity %>% mutate( DayofWeek = weekdays(as.Date(ActivityDate, "%m/%d/%Y")))
 ```
 ## Analysis
 - Summary of Statistics
+- ![image](https://user-images.githubusercontent.com/7337212/168389442-930974f8-58e1-4e69-997b-f39c39415636.png)
+
 
 ## Visuals
 - Activity per days of the week
 
-- Activity per hour of day
+#### Activity per hour of day
+![000016](https://user-images.githubusercontent.com/7337212/168405845-bb7d140d-ab38-46e7-8250-a061f3cb1cd2.png)
+
 
 - Days of sedentary activity
 
