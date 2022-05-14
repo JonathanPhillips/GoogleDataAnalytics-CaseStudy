@@ -75,7 +75,6 @@ nrow(sleep_day)
 - The most sedentary minutes were recorded between Tuesday and Thursday.
 - Not enough data exist for the weight log. Only 8 respondents.
 - The respondents were most active between 5-7pm each day.
-- There does not appear to be a correlation b
 
 ## Visuals
 #### Activity per days of the week
@@ -103,9 +102,11 @@ nrow(sleep_day)
 ![000013](https://user-images.githubusercontent.com/7337212/168408085-688bcffd-b422-4c7f-9aad-c1d55b1bdc40.png)
 
 ## Share
-<link to Google Slide>
+Google Slide Presentation
+https://docs.google.com/presentation/d/1BDFY0NHexuJBt62S9XylnEuv285fbKBdoGcPNnOpNJg/edit?usp=sharing
 
 ## Recommendations
-- Reminders to be active after so many minutes of sedentary activity
-- Sleep reminders for certain time
-- Not enough data around weight since the logging was manual. Is there an opportuntity for smart scales?  Or have a reminder to input weight manually for tracking.
+- The marketing team can show the correlation that less sedentary activity is healthier and results in more calories burned.
+- Not enough data around weight since the logging was manual. Is there an opportunity for more smart scales sales? Or have a reminder to input weight manually for tracking in the app. More data needed.
+- The sleep data does not seem to correlate positively with more activity or less.
+- The app can be used to set alarms or reminders to be "active" when a threshold of sedentary minutes is met to encourage activity.
