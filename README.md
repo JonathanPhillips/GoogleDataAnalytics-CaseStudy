@@ -40,25 +40,67 @@ SleepDay_merged.csv has 24 unique user Ids
 ```
 daily_activity <- daily_activity %>% mutate( DayofWeek = weekdays(as.Date(ActivityDate, "%m/%d/%Y")))
 ```
+- Check for unique values
+```
+length(unique(daily_activity$Id))
+length(unique(weight_log$Id))
+length(unique(sleep_day$Id))
+```
+- Are there NAs
+Are there any NAs?
+```
+sum(is.na(daily_activity))
+sum(is.na(sleep_day))
+sum(is.na(weight_log))
+```
+- Remove duplicates
+How many observations are there in each dataframe?
+```
+nrow(daily_activity)
+nrow(sleep_day)
+```
 ## Analysis
-- Summary of Statistics
-- ![image](https://user-images.githubusercontent.com/7337212/168389442-930974f8-58e1-4e69-997b-f39c39415636.png)
+#### Summary of Statistics
+ ![image](https://user-images.githubusercontent.com/7337212/168389442-930974f8-58e1-4e69-997b-f39c39415636.png)
 
+#### Daily Activity Statistics
+![image](https://user-images.githubusercontent.com/7337212/168407797-07fe30fe-ff72-4a59-a4a5-119daa5f9aa9.png)
+
+#### Sleep Log Statistics
+![image](https://user-images.githubusercontent.com/7337212/168407817-6561a9f6-f09b-46ee-9a0e-845dd83c016c.png)
+
+#### Observations 
+- There is an obvious correlation between the distance/steps and calories.
+- The respondents were most active between Tuesday and Thursday.
+- The most sedentary minutes were recorded between Tuesday and Thursday.
+- Not enough data exist for the weight log. Only 8 respondents.
+- The respondents were most active between 5-7pm each day.
+- There does not appear to be a correlation b
 
 ## Visuals
-- Activity per days of the week
+#### Activity per days of the week
+![000037](https://user-images.githubusercontent.com/7337212/168406706-a8e07103-8f92-4d45-90e8-427b83a9edf2.png)
 
 #### Activity per hour of day
-![000016](https://user-images.githubusercontent.com/7337212/168405845-bb7d140d-ab38-46e7-8250-a061f3cb1cd2.png)
+![00001a](https://user-images.githubusercontent.com/7337212/168406701-7fcd5af4-953c-4726-b083-bc7e9ccca332.png)
 
+#### Days of sedentary activity
+![000012 (1)](https://user-images.githubusercontent.com/7337212/168407654-dd7e50a6-c97a-411c-a454-4a0ce296017d.png)
 
-- Days of sedentary activity
+#### Activity vs Sleep
+![000017](https://user-images.githubusercontent.com/7337212/168407640-be5d8aae-5362-4598-9f4d-20f851dc75f7.png)
 
-- Correlation of calories and distance
+#### Correlation of Calories and Distance
+![00001b](https://user-images.githubusercontent.com/7337212/168407244-0f23c609-f8b1-4e83-86da-37fd1dee453e.png)
 
-- Correlation of calories and steps
+#### Correlation of Calories and Steps
+![00001a (1)](https://user-images.githubusercontent.com/7337212/168407238-dedfd036-0916-4156-8f9b-eb86341b03f4.png)
 
-- Correlation of activity and sleep
+#### Correlation of Activity and Sleep
+![000012](https://user-images.githubusercontent.com/7337212/168407338-0ee4629d-ef2c-42f0-9dbb-237c910434a0.png)
+
+#### Correlation of Sedentary Minutes and Steps
+![000013](https://user-images.githubusercontent.com/7337212/168408085-688bcffd-b422-4c7f-9aad-c1d55b1bdc40.png)
 
 ## Share
 <link to Google Slide>
